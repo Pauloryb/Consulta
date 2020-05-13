@@ -1,0 +1,580 @@
+﻿1) Consulta simples e total de uma tabela.
+
+SELECT * FROM tabela;
+
+
+
+
+
+2) Consulta de apenas uma coluna de uma tabela.
+
+SELECT coluna FROM tabela;
+
+
+
+
+
+3) Consulta duas colunas ou mais de uma tabela.
+
+SELECT coluna1, coluna2 FROM tabela;
+
+
+
+
+
+4) Consulta um registro de uma tabela pelo ID. Ex: Tabela Produtos.
+
+SELECT Nome_Prod FROM Produtos
+WHERE ID_Prod = 101;
+
+SELECT ID_Autor, Nome_Autor
+FROM tbl_autores
+WHERE Sobrenome_Autor = 'Stanek';
+
+
+
+
+5) Consultar dados de duas ou mais tabelas(Produtos e Fornecedores) relacionadas: INNER JOIN
+
+SELECT Nome_Prod, Nome_Fornec
+FROM Fornecedores
+INNER JOIN Produtos
+ON Fornecedores.Cod_Fornec = Produtos.Cod_Fornec;
+
+INNER JOIN – Consultar dados em duas ou mais Tabelas relacionadas.
+SELECT colunas
+FROM tabela1
+INNER JOIN tabela2
+ON tabela1.coluna=tabela2.coluna;
+
+Onde tabela1.coluna é o nome da primeira tabela concatenado com um ponto e com o nome da coluna chave primária ou estrangeira da tabela, e tabela2.coluna é o nome da segunda tabela concatenado com um ponto e com a chave estrangeira ou primária dessa tabela que se relaciona com a chave da primeira tabela.
+
+Vejamos um exemplo. Vamos consultar as tabelas de livros e autores (tbl_livro e tbl_autores) e retornar os dados relativos aos livros e aos autores ao mesmo tempo:
+SELECT * FROM tbl_Livro
+INNER JOIN tbl_autores
+ON tbl_Livro.ID_Autor = tbl_autores.ID_Autor; 
+
+Vejamos outro exemplo. Faremos a consulta nas tabelas de livros e autores, porém retornando apenas os nomes dos livros, seus ISBNs e os nomes dos autores desses livros. Note que as duas primeiras informações estão na tabela de livros, e o nome do autor está somente na tabela de autores. O que as liga é o relacionamento entre as colunas ID_Autor existentes nas tabelas – é chave primária na tabela de autores e estrangeira na de livros:
+SELECT tbl_Livro.Nome_Livro, tbl_Livro.ISBN, tbl_autores.Nome_Autor
+FROM tbl_Livro
+INNER JOIN tbl_autores
+ON tbl_Livro.ID_Autor = tbl_autores.ID_Autor;
+
+Mais um exemplo, agora com filtros. Vamos retornar os nomes dos livros e nomes das editoras, mas somente das editoras cujo nome se inicia com a letra M. Note o uso de aliases nestas declarações, a fim de simplificar o código:
+SELECT L.Nome_Livro AS Livros, E.Nome_editora AS Editoras
+FROM tbl_Livro AS L
+INNER JOIN tbl_editoras AS E
+ON L.ID_editora = E.ID_editora
+WHERE E.Nome_Editora LIKE 'M%';
+
+Mais um exemplo para terminar. Agora vamos fazer um INNER JOIN com as três tabelas do banco de dados simultaneamente. Queremos os nomes e preços dos livros, nomes de seus autores e editoras, mas somente das editoras cujo nome se inicia com a letra O, tudo isso ordenado em ordem decrescente de preço dos livros:
+SELECT L.Nome_Livro AS Livro,
+A.Nome_autor AS Autor,
+E.Nome_Editora AS Editora,
+L.Preco_Livro AS 'Preço do Livro'
+FROM tbl_Livro AS L
+INNER JOIN tbl_autores AS A
+ON L.ID_autor = A.ID_autor
+INNER JOIN tbl_editoras AS E
+ON L.ID_editora = E.ID_editora
+WHERE E.Nome_Editora LIKE 'O%'
+ORDER BY L.Preco_Livro DESC;
+
+
+
+
+
+6) Retornar resultados ordenados em uma consulta. (Tabela de Produtos.)
+
+SELECT Nome_Prod, Preco_Prod
+FROM Produtos
+ORDER BY Nome_Prod;
+
+SELECT Nome_Prod, Preco_Prod
+FROM Produtos
+ORDER BY Nome_Prod desc;
+
+
+
+
+7) Operadores AND, OR e NOT.
+
+Exemplos:
+
+SELECT * FROM tbl_Livro
+WHERE ID_Livro > 2 AND ID_Autor < 3;
+
+SELECT * FROM tbl_Livro
+WHERE ID_Livro > 2 OR ID_Autor < 3;
+
+SELECT * FROM tbl_Livro
+WHERE ID_Livro > 2 AND NOT ID_Autor < 3;
+
+
+
+
+
+8) – Retornar o número total de autores cadastrados na tabela de autores:
+
+SELECT COUNT(*) FROM tbl_autores;
+
+
+
+
+
+9) – Contar o número de autores que possuem livros cadastrados na tabela de autores, sem repetições
+
+SELECT COUNT(DISTINCT id_autor) FROM tbl_Livro;
+
+
+
+
+
+10) – Descobrir o preço mais alto dos livros:
+
+SELECT MAX(Preco_Livro) FROM tbl_Livro;
+
+
+
+
+
+11) – Descobrir a data de publicação do livro mais antigo:
+
+SELECT MIN(Data_Pub) FROM tbl_Livro;
+
+
+
+
+
+12) – Retornar o preço médio dos livros cadastrados no banco:
+
+SELECT AVG(Preco_Livro) FROM tbl_Livro;
+
+
+
+
+
+13) – Descobrir o valor total dos livros presentes na tabela de livros:
+
+SELECT SUM(Preco_Livro) FROM tbl_Livro;
+
+
+
+
+
+14) - Nomes alternativos para colunas e tabelas
+
+SELECT coluna
+AS alias_coluna
+FROM tabela AS alias_tabela;
+
+SELECT Nome_Livro
+AS Livro
+FROM tbl_Livro;
+
+SELECT Nome_Livro Livro
+FROM tbl_Livro;
+
+SELECT Nome_Livro Livro, Preco_Livro 'Preço do Livro'
+FROM tbl_Livro;
+
+
+
+
+
+15) LIKE e NOT LIKE
+‘%’  — Qualquer cadeia de 0 ou mais caracteres
+‘_’   — Sublinhado: qualquer caracter único
+
+Exemplos: 
+Selecionar todos os registros da tabela tbl_livro cujo nome comece com a letra F:
+SELECT * FROM tbl_Livro
+WHERE Nome_Livro LIKE 'F%'; 
+
+Selecionar todos os registros da tabela tbl_livro cujo nome não começa com a letra S:
+SELECT * FROM tbl_Livro
+WHERE Nome_Livro NOT LIKE 'S%'; 
+
+Selecionar os nomes de livros da tabela tbl_livro cujo nome se inicie com uma letra qualquer e a segunda letra seja a letra i:
+SELECT Nome_Livro
+FROM tbl_Livro
+WHERE Nome_Livro LIKE '_i%';
+
+Selecionar os nomes dos livros e seus respectivos preços, na tabela de livros, cujo nome não comece com a letra F e que custem mais de R$ 60,00:
+SELECT Nome_Livro AS Livro, Preco_Livro AS Valor
+FROM tbl_livro
+WHERE Nome_Livro NOT LIKE 'F%'
+AND Preco_Livro > 60.00;
+
+
+
+
+16) BETWEEN – Seleção de intervalos em consultas.
+
+SELECT colunas FROM tabela
+WHERE coluna BETWEEN valor1 AND valor2;
+
+Vamos retornar todos os livros da tabela tbl_livro cuja data de publicação esteja entre 17/05/2004 e 17/05/2011 (note como a data é fornecida no código: ano|mês|dia):
+SELECT * FROM tbl_Livro
+WHERE Data_Pub BETWEEN '20040517' AND '20110517';
+
+Agora vamos retornar os nomes dos livros e seus respectivos preços, da tabela tbl_livros, porém somente os livros cujos preços estiverem entre R$ 40,00 e 60,00:
+SELECT Nome_Livro AS Livro, Preco_Livro AS Preço
+FROM tbl_Livro
+WHERE Preco_Livro BETWEEN 40.00 AND 60.00;
+
+
+
+
+
+17) Usando o GROUP BY:
+
+Consulta usando agregação para obter o total de vendas de Mouses (sem o GROUP BY):
+SELECT SUM(Quantidade) As TotalMouses
+FROM Vendas
+WHERE Produto = 'Mouse';
+
+Consulta totalizando as vendas de todos os produtos por cidade:
+SELECT Cidade, SUM(Quantidade) As Total
+FROM Vendas
+GROUP BY Cidade;
+
+Consulta contando o número de registros de vendas (quantidade de vendas) por cidade:
+SELECT Cidade, COUNT(*) As Total
+FROM Vendas
+GROUP BY Cidade;
+
+Consulta com o total de vendas realizadas por cada vendedor:
+SELECT Nome_Vendedor, SUM(Quantidade)
+FROM Vendas
+GROUP BY Nome_Vendedor;
+
+
+
+
+18) HAVING – Filtrando os resultados do Agrupamento
+
+Consulta retornando total de vendas das cidades com menos de 2500 produtos vendidos:
+SELECT Cidade, SUM(Quantidade) As Total
+FROM Vendas
+GROUP BY Cidade
+HAVING SUM(Quantidade) < 2500;
+
+Consulta retornando total de vendas do produto ‘Teclado’ das cidades com menos de 1500 teclados vendidos:
+SELECT Cidade, SUM(Quantidade) As TotalTeclados
+FROM Vendas
+WHERE Produto = 'Teclado'
+GROUP BY Cidade
+HAVING SUM(Quantidade) < 1500;
+
+
+
+
+
+19)LEFT e RIGHT JOIN – Consultar dados em duas ou mais tabelas
+LEFT JOIN: Retorna todas as linhas da tabela à esquerda, mesmo se não houver nenhuma correspondência na tabela à direita.
+RIGHT JOIN: Retorna todas as linhas da tabela à direita, mesmo se não houver nenhuma correspondência na tabela à esquerda.
+FULL JOIN: Retorna linhas quando houver uma correspondência em qualquer uma das tabelas. É uma combinação de LEFT e RIGHT JOINS.
+
+LEFT JOIN
+Sintaxe:
+
+SELECT colunas
+FROM tabela_esq
+LEFT (OUTER) JOIN tabela_dir
+ON tabela_esq.coluna=tabela_dir.coluna;
+
+Exemplo:
+SELECT * FROM tbl_autores
+LEFT JOIN tbl_Livro
+ON tbl_Livro.ID_Autor = tbl_autores.ID_Autor;
+
+LEFT JOIN excluindo correspondências:
+Sintaxe:
+SELECT coluna
+FROM tabela_esq
+LEFT (OUTER) JOIN tabela_dir
+ON tabela_esq.coluna=tabela_dir.coluna
+WHERE tabela_dir.coluna IS NULL;
+Exemplo:
+
+SELECT * FROM tbl_autores
+LEFT JOIN tbl_Livro
+ON tbl_Livro.ID_Autor = tbl_autores.ID_Autor
+WHERE tbl_Livro.ID_Autor IS NULL;
+
+
+RIGHT JOIN
+Sintaxe:
+
+SELECT colunas
+FROM tabela_esq
+RIGHT (OUTER) JOIN tabela_dir
+ON tabela_esq.coluna=tabela_dir.coluna;
+
+Exemplo:
+
+SELECT * FROM tbl_Livro AS Li
+RIGHT JOIN tbl_editoras AS Ed
+ON Li.ID_editora = Ed.ID_editora;
+
+RIGHT JOIN excluindo correspondências:
+Sintaxe:
+
+SELECT coluna
+FROM tabela_esq
+RIGHT (OUTER) JOIN tabela_dir
+ON tabela_esq.coluna=tabela_dir.coluna
+WHERE tabela_esq.coluna IS NULL;
+Exemplo:
+
+SELECT * FROM tbl_Livro
+RIGHT JOIN tbl_editoras
+ON tbl_Livro.ID_editora = tbl_editoras.ID_editora
+WHERE tbl_Livro.ID_editora IS NULL;
+
+
+FULL JOIN
+Sintaxe:
+
+SELECT colunas
+FROM tabela1
+FULL (OUTER) JOIN tabela2
+ON tabela1.coluna=tabela2.coluna;
+
+FULL JOIN excluindo correspondências:
+Sintaxe:
+
+SELECT colunas
+FROM tabela1
+FULL (OUTER) JOIN tabela2
+ON tabela1.coluna=tabela2.coluna
+WHERE tabela1.coluna IS NULL
+OR tabela2.coluna IS NULL;
+CROSS JOIN
+Um CROSS JOIN retorna um produto cartesiano entre as tabelas, mostrando todas as combinações possíveis entre os registros.
+
+Sintaxe:
+
+SELECT colunas FROM tabela1
+CROSS JOIN tabela2;
+
+CROSS JOIN – Retornar Nome e Preço dos livros, cruzando os dados com a tabela de autores:
+SELECT Nome_Livro, Preco_Livro
+FROM tbl_livro
+CROSS JOIN tbl_autores;
+
+
+
+
+
+20) Operador UNION em MySQL – Combinar resultados de duas ou mais consultas.
+
+Sintaxe do UNION
+SELECT declaração_1
+UNION [ALL}
+SELECT declaração_2
+UNION [ALL}
+SELECT declaração_3 ...
+[ORDER BY colunas]
+Por padrão, o operador UNION elimina resultados duplicados; para inclui-los no resultado final, acrescente a palavra ALL.
+
+Exemplo 01
+
+Retornar nomes de livros, preços e assuntos dos livros.
+Caso o assunto seja Eletrônica, mostrar o preço acrescido de 15% em seu valor.
+Caso o livro custe mais de 200 reais, descontar 10% em seu valor.
+Ordenar por preço, do mais caro para o mais barato.
+SELECT L.NomeLivro Livro, L.PrecoLivro 'Preço Normal', L.PrecoLivro * 0.90 'Preço Ajustado', A.Assunto
+FROM tbl_Livros L INNER JOIN tbl_Assuntos A
+ON L.IdAssunto = A.IdAssunto
+WHERE L.PrecoLivro > 200.00
+UNION
+SELECT L.NomeLivro Livro, L.PrecoLivro 'Preço Normal', L.PrecoLivro * 1.15 'Preço Ajustado', A.Assunto
+FROM tbl_Livros L INNER JOIN tbl_Assuntos A
+ON L.IdAssunto = A.IdAssunto
+WHERE A.Assunto = 'Eletrônica'
+ORDER BY 'Preço Ajustado' DESC;
+Exemplo 02
+
+Retornar nomes de livros e preços dos livros.
+Caso o preço do livro seja igual ou superior a R$ 150,00, mostrar a mensagem “Livro Caro” em uma coluna à direita no resultado da consulta.
+Caso contrário, mostrar a mensagem “Preço Razoável”
+Ordenar por preço, do mais barato para o mais caro.
+SELECT NomeLivro Livro, PrecoLivro Preço, 'Livro Caro' Resultado
+FROM tbl_Livros
+WHERE PrecoLivro >= 150.00
+UNION
+SELECT NomeLivro Livro, PrecoLivro Preço, 'Preço Razoável' Resultado
+FROM tbl_Livros
+WHERE PrecoLivro < 150.00
+ORDER BY Preço;
+Exemplo 03
+
+Por padrão, o MySQL não possui suporte a FULL OUTER JOIN (junção externa completa). Porém, podemos simular um FULL OUTER JOIN usando UNION, como no exemplo abaixo.
+
+SELECT * FROM tbl_Assuntos
+LEFT JOIN tbl_Livros
+ON tbl_Livros.IdAssunto = tbl_Assuntos.IdAssunto
+UNION
+SELECT * FROM tbl_Assuntos
+RIGHT JOIN tbl_Livros
+ON tbl_Livros.IdAssunto = tbl_Assuntos.IdAssunto;
+
+
+
+
+
+21) Concatenação de Strings com as funções CONCAT, IFNULL e COALESCE
+
+Função CONCAT
+Sintaxe:
+
+CONCAT(string ou nome_coluna, <string | nome_coluna)
+
+Exemplos:
+
+SELECT CONCAT(‘Fábio ‘, ‘dos Reis’) AS ‘Meu Nome’;
+SELECT CONCAT(Nome_autor, ‘ ‘, Sobrenome_autor) AS ‘Nome Completo’
+FROM tbl_autores;
+SELECT CONCAT('Eu gosto do livro ', Nome_Livro)
+FROM tbl_Livro WHERE ID_autor = 2;
+Concatenação com NULL
+Se uma string for concatenada com o valor NULL, o resultado retornado será apenas NULL, independentemente das outras partes concatenadas. Veja um código de exemplo:
+
+SELECT CONCAT('A quantidade adquirida é ', ' ', quantidade)
+FROM tbl_teste_nulos
+WHERE  item = 'Teclado'; --este é um item cuja quantidade é nula
+Para evitar esse problema de concatenação com valores nulos, há funções disponíveis que substituem NULL por outro valor. São elas as funções IFNULL e COALESCE.
+
+Função IFNULL
+Efetua a concatenação de strings e, caso a string concatenada seja nula, a substitui por um valor padrão (substituição).
+
+Sintaxe:
+
+IFNULL (valor, substituição)
+
+Exemplo:
+
+SELECT CONCAT('A quantidade adquirida é ', ' ', IFNULL(quantidade, 0))
+FROM teste_nulos
+WHERE  item = 'Teclado';
+Função COALESCE
+Essa função retornará o primeiro valor não-nulo encontrado em seus argumentos.
+
+Sintaxe:
+
+COALESCE (valor1, valor2, …, valorN)
+
+Exemplo:
+
+SELECT CONCAT('A quantidade adquirida é ', ' ', COALESCE(NULL, quantidade, NULL, 0))
+FROM teste_nulos
+WHERE  item = 'Teclado';
+
+
+
+
+22) Funções Matemáticas e Operadores Aritméticos
+
++  Soma
+
+–   Subtração
+
+/   Divisão
+
+*   Multiplicação
+
+% ou MOD   Módulo
+
+DIV   Divisão inteira
+
+Vejamos alguns exemplos do uso de operadores aritméticos simples:
+
+SELECT 3 * 9;
+SELECT Nome_Livro, Preco_Livro * 5  AS 'Preço de 5 Unidades'
+FROM tbl_Livro;
+SELECT 2 * 9 / 3;
+SELECT Nome_Livro, Preco_Livro / 2 AS 'Preço com 50% de desconto'
+FROM tbl_Livro;
+SELECT 10 MOD 3;
+Aumentando os preços de todos os livros da tabela de livros em 10% (equivale a multiplicar o preço por 1,1):
+
+UPDATE tbl_livro
+SET Preco_livro = Preco_livro * 1.1;
+Neste exemplo todos os livros tem o preço reajustado, pois não utilizamos a cláusula WHERE na declaração. Para aumentar apenas o preço de livros específicos, é necessário aplicar o filtro adequado.
+
+Funções Matemáticas
+É possível também utilizar funções matemáticas nos valores de uma coluna e retornar resultados em uma coluna calculada.
+
+Abaixo listamos algumas funções matemáticas mais comuns:
+
+CEILING()   Arredondar para cima
+FLOOR()     Arredondar para baixo
+PI() Retorna o valor de Pi
+POW(x,y) Retorna x elevado a y
+SQRT()   Raiz quadrada de um argumento
+SIN() Retorna o seno de um número dado em radianos
+HEX() Retorna a representação hexadecimal de um valor decimal.
+Exemplos de Funções Matemáticas
+SELECT Nome_Livro, CEILING(Preco_Livro * 5)  AS  'Preço Arredondado'
+FROM tbl_livro;
+SELECT PI();
+SELECT POW(2,4);
+SELECT SQRT(81);
+SELECT SIN(PI());
+SELECT HEX(1200);
+
+
+
+
+
+23) REGEXP – Expressões Regulares em consultas
+
+lguns exemplos de caracteres para expressões regulares estão listados abaixo:
+
+ 
+
+Padrão	Significado
+[…]	Qualquer caracter único no intervalo ou conjunto especificado ([a-h]; [aeiou])
+[^…]  	Qualquer caracter único  que não esteja no intervalo ou conjunto especificado ([^a-h]; [^aeiou])
+^	Início da string (fora dos colchetes); Negação (dentro dos colchetes)
+$	Fim da string
+a|b|c	Alternação (a ou b ou c) (caractere pipe – |)
+*	Zero ou mais ocorrências do elemento precedente
++	Uma ou mais ocorrências do elemento precedente
+{n}	N instâncias do elemento precedente
+{m,n}	De M até N instâncias do elemento precedente
+ 
+
+Exemplos de consultas usando Expressões Regulares no MySQL:
+Retornar os nomes dos livros da tabels tbl_livro, onde o nome do livro se inicie com uma das letras F ou S
+
+SELECT Nome_Livro
+FROM tbl_Livro
+WHERE Nome_Livro REGEXP '^[FS]';
+
+Trazer os livros cujos nomes não se iniciam nem com o caractere F, nem com o caractere S
+
+SELECT Nome_Livro
+FROM tbl_Livro
+WHERE Nome_Livro REGEXP '^[^FS]';
+
+Retornar nomes de livros que finalizem com as letras n ou g:
+
+SELECT Nome_Livro
+FROM tbl_Livro
+WHERE Nome_Livro REGEXP '[ng]$';
+
+Consultar os livros cujos nomes comecem com as letras F ou S, ou ainda com a sequência de caracteres Mi
+
+SELECT Nome_Livro
+FROM tbl_Livro
+WHERE Nome_Livro REGEXP '^[FS]|Mi';
+
+
+
+
+
+
+

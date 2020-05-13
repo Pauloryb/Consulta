@@ -1,0 +1,28 @@
+1) Criar tabelas.
+
+
+CREATE TABLE nome_tabela (
+ coluna1 tipo_dados constraint,
+ coluna2 tipo_dados constraint,
+ ...
+ colunaN tipo_dados constraint
+);
+
+
+Exemplos:
+
+CREATE TABLE Fornecedores (
+ Cod_Fornec SMALLINT PRIMARY KEY,
+ Nome_Fornec VARCHAR(50)
+);
+
+
+CREATE TABLE Produtos (
+ ID_Prod SMALLINT PRIMARY KEY,
+ Nome_Prod VARCHAR(50) NOT NULL,
+ Quant_Prod SMALLINT NOT NULL,
+ Preco_Prod DECIMAL(10,2),
+ Cod_Fornec SMALLINT,
+ CONSTRAINT fk_cod_fornec FOREIGN KEY (Cod_Fornec)
+ REFERENCES Fornecedores(Cod_Fornec)
+);

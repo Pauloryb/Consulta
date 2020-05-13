@@ -1,0 +1,9 @@
+1)  Alterar um registro na tabela.
+
+Exemplo: 
+
+UPDATE Produtos
+SET Preco_Prod = 630.00
+WHERE ID_Prod = 100;
+
+

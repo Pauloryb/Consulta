@@ -1,0 +1,8 @@
+1) Excluir registros de uma tabela.
+
+Exemplo:
+
+DELETE FROM Produtos
+WHERE ID_Prod = 101;
+
+
